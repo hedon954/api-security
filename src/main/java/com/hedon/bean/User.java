@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.checkerframework.common.aliasing.qual.Unique;
+import org.hibernate.annotations.Columns;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.beans.BeanUtils;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 
 /**
@@ -27,7 +27,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)  //自增
     private Integer id;
     private String name;
+    @NotBlank(message = "用户名不能为空！")
+    @Column(unique = true,nullable = false,table = "user") //数据库底层的约束 -> 用户名唯一性且不能为空
     private String username;
+    @NotBlank(message = "密码不能为空！")
     private String password;
 
     public UserInfo buildUser(User user){

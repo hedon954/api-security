@@ -23,6 +23,8 @@ public class UserServiceImpl implements UserService {
     public UserInfo create(UserInfo userInfo) {
         User user = new User();
         BeanUtils.copyProperties(userInfo,user);
+//        //故意设置为空，制造错误
+//        user.setPassword(null);
         userRepository.save(user);
         userInfo.setId(user.getId());
         return userInfo;
