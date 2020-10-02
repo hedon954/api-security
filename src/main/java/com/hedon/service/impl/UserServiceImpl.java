@@ -56,4 +56,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public UserInfo login(UserInfo userInfo) {
+        User user = userRepository.findByUsername(userInfo.getUsername());
+        return user.buildUser(user);
+    }
 }

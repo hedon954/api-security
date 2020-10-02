@@ -14,6 +14,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Base64;
 
@@ -50,9 +51,21 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
             //检查用户是否存在且密码是否正确
             if (user != null && SCryptUtil.check(password,user.getPassword())){
                 //放入请求体，进入下一环
-                httpServletRequest.setAttribute("user",user);
+                httpServletRequest.getSession().setAttribute("user",user.buildUser(user));
+                //表明该 session 是一个临时 session，请求过后需要在 finally 销毁
+                httpServletRequest.getSession().setAttribute("temp","yes");
             }
         }
-        filterChain.doFilter(httpServletRequest,httpServletResponse);
+
+        try {
+            filterChain.doFilter(httpServletRequest,httpServletResponse);
+        } finally {
+            //请求结束后才会执行 finally 语句
+            HttpSession session = httpServletRequest.getSession();
+            //用 Basic 认证的，每次请求后都销毁 session
+            if (session.getAttribute("temp")!=null){
+                session.invalidate();
+            }
+        }
     }
 }

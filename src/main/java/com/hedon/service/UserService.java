@@ -19,5 +19,5 @@ public interface UserService {
 
     UserInfo getById(Integer id);
 
-
+    UserInfo login(UserInfo userInfo);
 }
