@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: user-api
+  #配置 MySQL 数据库连接信息
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/api_security?characterEncoding=UTF8&useUnicode=true&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+  # 配置 JPA
+  jpa:
+    generate-ddl: true  # 将加油 @Entity 的实体类跟数据库绑定起来，实体类变了，数据库表结构也会相应的变
+    show-sql: true # 显示执行的 sql 语句
+
