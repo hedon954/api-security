@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.common.aliasing.qual.Unique;
 import org.hibernate.annotations.Columns;
 import org.hibernate.validator.constraints.UniqueElements;
@@ -33,9 +34,24 @@ public class User {
     @NotBlank(message = "密码不能为空！")
     private String password;
 
+    private String permissions;
+
     public UserInfo buildUser(User user){
         UserInfo userInfo = new UserInfo();
         BeanUtils.copyProperties(user,userInfo);
         return userInfo;
+    }
+
+    public boolean hasPermission(String method) {
+        //默认没权限
+        boolean result = false;
+        //GET 请求对应 r 读请求
+        if (StringUtils.equalsIgnoreCase("get",method)){
+            result = StringUtils.contains(permissions,"r");
+        }else{
+            //非 GET 请求对应 w 写请求
+            result = StringUtils.contains(permissions,"w");
+        }
+        return result;
     }
 }
