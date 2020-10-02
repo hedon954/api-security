@@ -4,6 +4,7 @@ import com.hedon.bean.User;
 import com.hedon.bean.UserInfo;
 import com.hedon.dao.UserRepository;
 import com.hedon.service.UserService;
+import com.lambdaworks.crypto.SCryptUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,9 +23,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfo create(UserInfo userInfo) {
         User user = new User();
+        //在存储到数据库之前，进行密码加密，后面3个参数不需要过多了解
+        userInfo.setPassword(SCryptUtil.scrypt(userInfo.getPassword(),32768,8,1));
         BeanUtils.copyProperties(userInfo,user);
-//        //故意设置为空，制造错误
-//        user.setPassword(null);
         userRepository.save(user);
         userInfo.setId(user.getId());
         return userInfo;

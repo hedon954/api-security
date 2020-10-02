@@ -2,6 +2,7 @@ package com.hedon.filter;
 
 import com.hedon.bean.User;
 import com.hedon.dao.UserRepository;
+import com.lambdaworks.crypto.SCryptUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -47,7 +48,7 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
             //查询数据库
             User user = userRepository.findByUsername(username);
             //检查用户是否存在且密码是否正确
-            if (user != null && StringUtils.equals(password,user.getPassword())){
+            if (user != null && SCryptUtil.check(password,user.getPassword())){
                 //放入请求体，进入下一环
                 httpServletRequest.setAttribute("user",user);
             }
